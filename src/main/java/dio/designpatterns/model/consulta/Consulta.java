@@ -1,6 +1,8 @@
 package dio.designpatterns.model.consulta;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import dio.designpatterns.model.medico.Medico;
 import dio.designpatterns.model.paciente.Paciente;
 import jakarta.persistence.*;
@@ -17,6 +19,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Consulta {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -37,7 +40,8 @@ public class Consulta {
         this.consultaCancelada = true;
     }
 
-    public void remarcar(LocalDateTime data) {
+    public void remarcar(Medico medico, LocalDateTime data) {
+        this.medico = medico;
         this.dataDaConsulta = data;
     }
 }

@@ -6,6 +6,7 @@ import dio.designpatterns.model.medico.MedicoRepository;
 import dio.designpatterns.service.ViaCepService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
@@ -32,21 +33,27 @@ public class MedicoService implements MedicoCrud{
     @Override
     public void save(Medico medico) {
         String cep = medico.getEndereco().getCep();
-        medico.setEndereco(viaCepService.obterCep(cep));
+        medico.setEndereco(buscarEnderecoPorCep(cep));
         medicoRepository.save(medico);
     }
 
     @Override
+    @Transactional
     public void update(Long id, Medico medico) {
         var medicoCadastrado = medicoRepository.getReferenceById(id);
         var cep = medico.getEndereco().getCep();
 
-        medico.setEndereco(viaCepService.obterCep(cep));
+        medico.setEndereco(buscarEnderecoPorCep(cep));
         medicoCadastrado.atualizarInformacoes(medico);
     }
+
 
     @Override
     public void delete(Long id) {
         medicoRepository.deleteById(id);
+    }
+
+    private Endereco buscarEnderecoPorCep(String cep) {
+        return viaCepService.obterCep(cep);
     }
 }

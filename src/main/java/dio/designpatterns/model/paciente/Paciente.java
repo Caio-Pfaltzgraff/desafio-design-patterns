@@ -1,5 +1,7 @@
 package dio.designpatterns.model.paciente;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import dio.designpatterns.model.Pessoa;
 import dio.designpatterns.model.endereco.Endereco;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -14,14 +16,12 @@ import lombok.*;
 @Entity
 @Table(name = "tb_pacientes")
 @Getter
-@EqualsAndHashCode(of = "cpf")
-public class Paciente {
+@EqualsAndHashCode(of = "cpf", callSuper = false)
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+public class Paciente extends Pessoa {
 
     @Id
     private String cpf;
-    private String nome;
-    private String email;
-    private String telefone;
     @Embedded
     private @Setter Endereco endereco;
     private Boolean ativo;
@@ -56,5 +56,10 @@ public class Paciente {
         if (paciente.getTelefone() != null) {
             this.telefone = paciente.getTelefone();
         }
+    }
+
+    @Override
+    public String exibirInformacoes() {
+        return super.exibirInformacoes() + ", endereco: " + this.endereco;
     }
 }

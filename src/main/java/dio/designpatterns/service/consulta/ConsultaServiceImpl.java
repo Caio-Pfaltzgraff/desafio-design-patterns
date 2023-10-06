@@ -1,6 +1,7 @@
 package dio.designpatterns.service.consulta;
 
 import dio.designpatterns.model.consulta.Consulta;
+import dio.designpatterns.model.consulta.ConsultaAlteraDTO;
 import dio.designpatterns.model.consulta.ConsultaRepository;
 import dio.designpatterns.model.medico.Medico;
 import dio.designpatterns.model.paciente.Paciente;
@@ -36,21 +37,27 @@ public class ConsultaServiceImpl implements ConsultaService{
     }
 
     @Override
-    public void remarcar(Long idConsulta, LocalDateTime data) {
-        consultaRepository.getReferenceById(idConsulta).remarcar(data);
+    public void remarcar(Long idConsulta, ConsultaAlteraDTO alteracao) {
+        var consulta = consultaRepository.getReferenceById(idConsulta);
+        var medico = medicoService.findById(alteracao.getIdMedico());
+        consulta.remarcar(medico, alteracao.getNovaData());
     }
 
     @Override
     public List<Consulta> buscarProximasConsultasPorPaciente(String idPaciente) {
         Paciente paciente = pacienteService.findById(idPaciente);
-        return consultaRepository.buscarConsultaPorPaciente(paciente);
+        return consultaRepository.buscarConsultaPorPaciente(paciente.getCpf());
     }
 
     public List<Consulta> findAll() {
-        return consultaRepository.findAll().stream().sorted(Comparator.comparing(Consulta::getDataDaConsulta)).toList();
+        return consultaRepository.buscarTodasConsultas().stream().sorted(Comparator.comparing(Consulta::getDataDaConsulta)).toList();
     }
 
     public Consulta findById(Long idConsulta) {
         return consultaRepository.getReferenceById(idConsulta);
+    }
+
+    public Medico getMedico(Long idMedico) {
+        return medicoService.findById(idMedico);
     }
 }

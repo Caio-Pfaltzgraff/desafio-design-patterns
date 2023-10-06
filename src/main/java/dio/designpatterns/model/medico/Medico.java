@@ -1,6 +1,7 @@
 package dio.designpatterns.model.medico;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import dio.designpatterns.model.Pessoa;
 import dio.designpatterns.model.endereco.Endereco;
 import jakarta.persistence.*;
 import lombok.*;
@@ -10,14 +11,11 @@ import lombok.*;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(of = "id", callSuper = false)
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class Medico {
+public class Medico extends Pessoa {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String nome;
-    private String email;
-    private String telefone;
     @Enumerated(EnumType.STRING)
     private Especialidade especialidade;
     @Embedded
@@ -33,8 +31,11 @@ public class Medico {
         if(medico.telefone != null) {
             this.telefone = medico.telefone;
         }
-        if(medico.endereco != null) {
-            this.endereco.alterarEndereco(medico.endereco);
-        }
+        this.endereco.alterarEndereco(medico.endereco);
+    }
+
+    @Override
+    public String exibirInformacoes() {
+        return super.exibirInformacoes() + ", endereco: " + this.endereco;
     }
 }

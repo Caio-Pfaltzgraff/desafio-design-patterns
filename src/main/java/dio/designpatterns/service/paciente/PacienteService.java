@@ -33,7 +33,6 @@ public class PacienteService implements PacienteCrud{
     }
 
     @Override
-    @Transactional
     public void save(Paciente paciente) {
         var cep = paciente.getEndereco().getCep();
 
@@ -54,8 +53,7 @@ public class PacienteService implements PacienteCrud{
     @Override
     @Transactional
     public void delete(String id) {
-        Paciente paciente = pacienteRepository.getReferenceById(id);
-        paciente.excluir();
+        pacienteRepository.getReferenceById(id).excluir();
     }
 
     public Endereco buscarEnderecoPorCep(String cep) {
