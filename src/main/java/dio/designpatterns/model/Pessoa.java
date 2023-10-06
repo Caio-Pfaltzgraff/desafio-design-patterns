@@ -3,7 +3,7 @@ package dio.designpatterns.model;
 import lombok.Getter;
 
 @Getter
-public class Pessoa {
+public abstract class Pessoa {
     protected String nome;
     protected String email;
     protected String telefone;
